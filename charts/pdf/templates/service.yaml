@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "pdf.fullname" . }}
+  labels:
+    {{- include "pdf.labels" . | nindent 4 }}
+spec:
+  clusterIP: {{ .Values.service.clusterIp }}
+  ipFamilies:
+    - IPv4
+  internalTrafficPolicy: {{ .Values.service.internalTrafficPolicy }}
+  clusterIPs:
+    - {{ .Values.service.clusterIp }}
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.port }}
+      protocol: TCP
+      name: {{ .Values.service.port }}-tcp
+  selector:
+    {{- include "pdf.selectorLabels" . | nindent 4 }}

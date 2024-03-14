@@ -1,0 +1,32 @@
+kind: BuildConfig
+apiVersion: build.openshift.io/v1
+metadata:
+  name: {{ .Values.nameOverride }}
+  labels:
+    app: Court-Admin-Scheduling
+    app-group: app-image
+    name: {{ .Values.nameOverride }}
+spec:
+  nodeSelector: null
+  output:
+    to:
+      kind: ImageStreamTag
+      name: '{{ .Values.nameOverride }}:latest'
+  resources: 
+    {{- toYaml .Values.buildResources | nindent 4 }}
+  strategy:
+    type: Source
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        namespace: openshift
+        name: 'nodejs:10'
+  source:
+    type: Git
+    git:
+      uri: 'https://github.com/bcgov/court-admin-scheduling.git'
+      ref: master
+    contextDir: web
+  triggers:
+    - type: ConfigChange
+  runPolicy: Serial
